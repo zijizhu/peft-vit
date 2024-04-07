@@ -15,6 +15,7 @@ from transformers.optimization import get_cosine_schedule_with_warmup
 
 from src.loss import SoftTargetCrossEntropy
 from src.mixup import Mixup
+from utils import block_expansion
 
 MODEL_DICT = {
     "vit-b16-224-in21k": "google/vit-base-patch16-224-in21k",
@@ -169,6 +170,34 @@ class ClassificationModel(pl.LightningModule):
                 modules_to_save=["classifier"],
             )
             self.net = get_peft_model(self.net, config)
+        elif self.training_mode == "block":
+            
+            config = AutoConfig.from_pretrained(model_path)
+            config.image_size = self.image_size
+
+            print('Number of Layers: ', config.num_hidden_layers)
+
+            ckpt = self.net.state_dict()
+            output, selected_layers = block_expansion(ckpt,
+                                                      split,
+                                                      config.num_hidden_layers)
+            
+            print('Selected Layers: ', selected_layers)
+
+            config.num_hidden_layers += len(selected_layers)
+            config.num_labels = self.n_classes
+
+            self.net = AutoModelForImageClassification.from_config(config)
+            self.net.load_state_dict(output)
+
+            self.net.requires_grad_(False)
+            for n, p in self.net.named_parameters():
+                for idx in selected_layers:
+                    if 'layer.' + str(idx) + '.' in n:
+                        p.requires_grad_(True)
+
+            self.net.classifier = torch.nn.Linear(config.hidden_size, self.n_classes)
+
         elif self.training_mode == "full":
             pass  # Keep all layers unfrozen
         else:
