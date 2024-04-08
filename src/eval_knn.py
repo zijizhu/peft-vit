@@ -79,13 +79,8 @@ def extract_feature_pipeline(args):
         config.image_size = 224
 
         model = AutoModelForImageClassification.from_config(config)
-        ckpt = model.state_dict()
-        print('number of layers: ', config.num_hidden_layers)
-        
-        output, selected_layers = block_exp(ckpt, args.split, config.num_hidden_layers)
-        
-        print('selected layers: ', selected_layers)
-
+        ckpt = model.state_dict()        
+        _, selected_layers = block_expansion(ckpt, args.split, config.num_hidden_layers)
         config.num_hidden_layers += len(selected_layers)
         config.num_labels = args.num_classes
 
