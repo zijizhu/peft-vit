@@ -1,5 +1,5 @@
-# Fine-tuning Vision Transformers
-Code for fine-tuning ViT models on various classification datasets. Includes options for full model, LoRA and linear fine-tuning procedures.
+# Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting
+Code for Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting. Includes options for full model, LoRA, block expansion, and linear fine-tuning procedures.
 
 
 ## Available Datasets
