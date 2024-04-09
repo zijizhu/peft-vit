@@ -1,5 +1,18 @@
 # Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting
-Code for Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting. Includes options for full model, LoRA, block expansion, and linear fine-tuning procedures.
+
+[PyTorch] Code for the paper - 'Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting' (CVPR - eLVM 2024). 
+ 
+
+> _**Abstract:** Artificial neural networks often suffer from catastrophic forgetting, where learning new concepts leads to a com- plete loss of previously acquired knowledge. We observe that this issue is particularly magnified in vision transform- ers (ViTs), where post-pre-training and fine-tuning on new tasks can significantly degrade the model’s original general abilities. For instance, a DINO ViT-Base/16 pre-trained on ImageNet-1k loses over 70% accuracy on ImageNet-1k af- ter just 10 iterations of fine-tuning on CIFAR-100. Over- coming this stability-plasticity dilemma is crucial for en- abling ViTs to continuously learn and adapt to new domains while preserving their initial knowledge. In this work, we study two new parameter-efficient fine-tuning strategies: (1) Block Expansion, and (2) Low-rank adaptation (LoRA). Our experiments reveal that using either Block Expansion or LoRA on self-supervised pre-trained ViTs surpass fully fine-tuned ViTs in new domains while offering significantly greater parameter efficiency. Notably, we find that Block Expansion experiences only a minimal performance drop in the pre-training domain, thereby effectively mitigating catastrophic forgetting in pre-trained ViTs._
+
+
+
+Includes standard full model, linear probing and parameter efficient strategies like Block Expansion and LoRA for fine-tuning Vision Transformers (ViTs) for image classification.
+
+## Requirements
+- Python 3.8+
+- `pip install -r requirements.txt`
+
 
 
 ## Available Datasets
@@ -18,9 +31,6 @@ Code for Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastr
 |[Image Folder](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) | `custom`|
 
 
-## Requirements
-- Python 3.8+
-- `pip install -r requirements.txt`
 
 
 ## Usage
