@@ -2,17 +2,15 @@
 
 [PyTorch] Code for the paper - 'Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting' (CVPR - eLVM 2024). 
  
-
-> _**Abstract:** Artificial neural networks often suffer from catastrophic forgetting, where learning new concepts leads to a com- plete loss of previously acquired knowledge. We observe that this issue is particularly magnified in vision transform- ers (ViTs), where post-pre-training and fine-tuning on new tasks can significantly degrade the model’s original general abilities. For instance, a DINO ViT-Base/16 pre-trained on ImageNet-1k loses over 70% accuracy on ImageNet-1k af- ter just 10 iterations of fine-tuning on CIFAR-100. Over- coming this stability-plasticity dilemma is crucial for en- abling ViTs to continuously learn and adapt to new domains while preserving their initial knowledge. In this work, we study two new parameter-efficient fine-tuning strategies: (1) Block Expansion, and (2) Low-rank adaptation (LoRA). Our experiments reveal that using either Block Expansion or LoRA on self-supervised pre-trained ViTs surpass fully fine-tuned ViTs in new domains while offering significantly greater parameter efficiency. Notably, we find that Block Expansion experiences only a minimal performance drop in the pre-training domain, thereby effectively mitigating catastrophic forgetting in pre-trained ViTs._
-
+![img](assets/framework-f.png)
 
 
 Includes standard full model, linear probing and parameter efficient strategies like Block Expansion and LoRA for fine-tuning Vision Transformers (ViTs) for image classification.
 
+
 ## Requirements
 - Python 3.8+
 - `pip install -r requirements.txt`
-
 
 
 ## Available Datasets
@@ -24,28 +22,53 @@ Includes standard full model, linear probing and parameter efficient strategies 
 |[Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)|  `pets37`|
 |[Oxford Flowers-102](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/)|  `flowers102`|
 |[Food-101](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/)|  `food101`|
-|[STL-10](https://cs.stanford.edu/~acoates/stl10/)|  `stl10`|
 |[Describable Textures Dataset](https://www.robots.ox.ac.uk/~vgg/data/dtd/) | `dtd`|
-|[Stanford Cars](https://ai.stanford.edu/~jkrause/cars/car_dataset.html) | `cars`|
-|[FGVC Aircraft](https://www.robots.ox.ac.uk/~vgg/data/fgvc-aircraft/) | `aircraft`|
-|[Image Folder](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) | `custom`|
+|[Image Folder](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) | `custom dataset`|
 
 
 
 
-## Usage
-### Training
-- To fine-tune a ViT-B/16 model on CIFAR-100 run:
-```
-python main.py fit --trainer.accelerator gpu --trainer.devices 1 --trainer.precision 16-mixed
---trainer.max_steps 5000 --model.warmup_steps 500 --model.lr 0.01
---trainer.val_check_interval 500 --data.batch_size 128 --data.dataset cifar100
-```
+## Usage: 
+
 - [`config/`](configs/) contains example configuration files which can be run with:
 ```
 python main.py fit --config path/to/config
 ```
-- To get a list of all arguments run `python train.py --help`
+
+You can either edit the existing config for your own choice of hyperparameters or choose to do it from command line as follows:
+
+
+```shell
+python main.py fit --trainer.accelerator gpu --trainer.devices 1 --trainer.precision 16-mixed
+--trainer.max_steps 5000 --model.warmup_steps 500 --model.lr 0.01
+--trainer.val_check_interval 500 --data.batch_size 128 --data.dataset cifar100
+
+```
+
+## Examples
+### 1. Full Fine-tuning:
+- To fully fine-tune a ViT-B/16 model on Foods-101 run:
+```
+    python main.py fit --config configs/full/food101.yaml
+```
+
+### 2. Linear Probing:
+- To train linear probes on top of a ViT-B/16 model on Foods-101 run:
+```
+    python main.py fit --config configs/linear/food101.yaml
+```
+
+### 3. Low-Rank Adaptation (LoRA):
+- To fine-tuning a ViT-B/16 model using LoRA on Foods-101 run:
+```
+    python main.py fit --config configs/lora/food101.yaml
+```
+
+### 4. Block Expansion:
+- To fine-tune a ViT-B/16 model using block expansion on Foods-101 run:
+```
+    python main.py fit --config configs/block/food101.yaml
+```
 
 #### Training on a Custom Dataset
 To train on a custom dataset first organize the images into 
@@ -63,28 +86,40 @@ python main.py test --ckpt_path path/to/checkpoint --config path/to/config
 ## Results
 All results are from fine-tuned ViT-B/16 models which were pretrained on ImageNet-21k (`--model.model_name vit-b16-224-in21k`).
 
-#### Full Fine-tuning
+![img2](assets/results.png)
 
-| Dataset            | Steps          | Warm Up Steps     | Learning Rate      | Test Accuracy | Config                              | 
+### Standard Fine-tuning
+| Model            | # Params          | Cifar-100     | IN-1k     | MEAN | Config                              |
 |:------------------:|:--------------:|:-----------------:|:------------------:|:-------------:|:-----------------------------------:|
-| CIFAR-10           | 5000           | 500               | 0.01               | 99.00         | [Link](configs/full/cifar10.yaml)   |
-| CIFAR-100          | 5000           | 500               | 0.01               | 92.89         | [Link](configs/full/cifar100.yaml)  |
-| Oxford Flowers-102 | 1000           | 100               | 0.03               | 99.02         | [Link](configs/full/flowers102.yaml)|
-| Oxford-IIIT Pets   | 2000           | 200               | 0.01               | 93.68         | [Link](configs/full/pets37.yaml)    |
-| Food-101           | 5000           | 500               | 0.03               | 90.67         | [Link](configs/full/food101.yaml)   |
+| All          | 85.9 M            | 88.13               | 25.24               | 56.69         | [Link](configs/full/cifar100-lr=0.005.yaml)   |
+| Top-3        | 21.3 M            | 84.56               | 74.15               | 79.36         | [Link](configs/add_three/cifar100-lr=0.005.yaml)  |
+| Linear | 76.9 K           | 80.57               | **76.11**               | 78.34         | [Link](configs/linear/cifar100-lr=0.005.yaml)|
 
-#### LoRA
 
-| Dataset            | r  | Alpha | Bias | Steps | Warm Up Steps | Learning Rate | Test Accuracy | Config                                   | 
-|:------------------:|:--:|:-----:|:----:|:-----:|:-------------:|:-------------:|:-------------:|:----------------------------------------:|
-| CIFAR-100          | 8  | 8     | None | 5000  | 500           | 0.05          | 92.40         | [Link](configs/lora/cifar100-r8.yaml)    |
-| Oxford-IIIT Pets   | 1  | 16    | None | 3000  | 100           | 0.05          | 93.30         | [Link](configs/lora/pets37-r1.yaml)      |
-| Oxford-IIIT Pets   | 8  | 8     | None | 3000  | 100           | 0.05          | 93.79         | [Link](configs/lora/pets37-r8.yaml)      |
-| Oxford-IIIT Pets   | 8  | 8     | All  | 3000  | 300           | 0.05          | 93.76         | [Link](configs/lora/pets37-r8-bias.yaml) |
+### LoRA
+| Model            | # Params          | Cifar-100     | IN-1k     | MEAN | Config                              |
+|:------------------:|:--------------:|:-----------------:|:------------------:|:-------------:|:-----------------------------------:|
+| r=4          | 301 K            |87.91      |    66.82              | 77.37         | [Link](configs/lora/cifar100-r4-lr-0.05.yaml)   |
+| r=8        | 448 K            | 88.27       |    65.99              | 77.13         | [Link](configs/lora/cifar100-r8-lr-0.005.yaml)  |
+| r=16 | 743 K           | 87.84              |    65.06             | 76.45          | [Link](configs/lora/cifar100-r16-lr-0.05.yaml)|
 
-#### Linear Probe
 
-| Dataset            | Steps          | Warm Up Steps     | Learning Rate      | Test Accuracy | Config                                | 
-|:------------------:|:--------------:|:-----------------:|:------------------:|:-------------:|:-------------------------------------:|
-| Oxford Flowers-102 | 2000           | 100               | 1.0                | 99.02         | [Link](configs/linear/flowers102.yaml)|
-| Oxford-IIIT Pets   | 2000           | 100               | 0.5                | 92.64         | [Link](configs/linear/pets37.yaml)    |
+### Block Expansion
+| Model            | # Params          | Cifar-100     | IN-1k     | MEAN | Config                              |
+|:------------------:|:--------------:|:-----------------:|:------------------:|:-------------:|:-----------------------------------:|
+| p=1          | 7.2 M            |82.72     |   75.75              | 79.24         | [Link](configs/block/)   |
+| p=2        | 14.3 M           |86.70       |    75.54            |  81.12        | [Link](configs/block/)  |
+| p=3 | 21.3 M           | 88.58 |      74.61                      |  **81.60**         | [Link](configs/block/)|
+| p=4 | 28.4 M          | **89.09**      |            72.28            |  80.69        | [Link](configs/block/)|
+
+
+## Bibtex
+You can cite us using the following:
+```bibtex
+@Misc{peft,
+  title =        {Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
+  author =       {Reza Akbarian*, Nidhin Harilal*, Claire Monteleoni, Maziar Raissi},
+  howpublished = {\url{https://github.com/rezaakb/peft-vit}},
+  year =         {2024}
+}
+```
