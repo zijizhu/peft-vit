@@ -116,7 +116,7 @@ All results are from fine-tuned ViT-B/16 models which were pretrained on ImageNe
 ## Bibtex
 You can cite us using the following:
 ```bibtex
-@Misc{peft,
+@Misc{peft-vit,
   title =        {Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
   author =       {Reza Akbarian*, Nidhin Harilal*, Claire Monteleoni, Maziar Raissi},
   howpublished = {\url{https://github.com/rezaakb/peft-vit}},
