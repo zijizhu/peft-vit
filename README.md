@@ -1,6 +1,6 @@
 # Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting
 
-[PyTorch] Code for the paper - 'Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting' (CVPR - eLVM 2024). 
+[PyTorch] Code for the paper - 'Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting' (CVPR - eLVM 2024). [Paper](https://arxiv.org/pdf/2404.17245)
  
 ![img](assets/framework-f.png)
 
@@ -116,10 +116,10 @@ All results are from fine-tuned ViT-B/16 models which were pretrained on ImageNe
 ## Bibtex
 You can cite us using the following:
 ```bibtex
-@Misc{peft-vit,
-  title =        {Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
-  author =       {Reza Akbarian*, Nidhin Harilal*, Claire Monteleoni, Maziar Raissi},
-  howpublished = {\url{https://github.com/rezaakb/peft-vit}},
-  year =         {2024}
+@inproceedings{AkbarianBafghi2024ParameterEF,
+  title={Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
+  author={Reza Akbarian Bafghi and Nidhin Harilal and Claire Monteleoni and Maziar Raissi},
+  year={2024},
+  url={https://api.semanticscholar.org/CorpusID:269430713}
 }
 ```
