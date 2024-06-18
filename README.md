@@ -116,10 +116,12 @@ All results are from fine-tuned ViT-B/16 models which were pretrained on ImageNe
 ## Bibtex
 You can cite us using the following:
 ```bibtex
-@inproceedings{AkbarianBafghi2024ParameterEF,
-  title={Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
-  author={Reza Akbarian Bafghi and Nidhin Harilal and Claire Monteleoni and Maziar Raissi},
-  year={2024},
-  url={https://api.semanticscholar.org/CorpusID:269430713}
+@InProceedings{Bafghi_2024_CVPR,
+    author    = {Bafghi, Reza Akbarian and Harilal, Nidhin and Monteleoni, Claire and Raissi, Maziar},
+    title     = {Parameter Efficient Fine-tuning of Self-supervised ViTs without Catastrophic Forgetting},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2024},
+    pages     = {3679-3684}
 }
 ```
