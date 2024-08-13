@@ -15,7 +15,7 @@ from transformers.optimization import get_cosine_schedule_with_warmup
 
 from src.loss import SoftTargetCrossEntropy
 from src.mixup import Mixup
-from utils import block_expansion
+from .utils import block_expansion
 
 MODEL_DICT = {
     "vit-b16-224-in21k": "google/vit-base-patch16-224-in21k",
@@ -41,6 +41,7 @@ MODEL_DICT = {
 class ClassificationModel(pl.LightningModule):
     def __init__(
         self,
+        split: int,
         model_name: str = "vit-b16-224-in21k",
         optimizer: str = "sgd",
         lr: float = 1e-2,
@@ -93,6 +94,7 @@ class ClassificationModel(pl.LightningModule):
         """
         super().__init__()
         self.save_hyperparameters()
+        self.split = split
         self.model_name = model_name
         self.optimizer = optimizer
         self.lr = lr
