@@ -195,12 +195,6 @@ class DataModule(pl.LightningDataModule):
             ]
         )
 
-    def prepare_data(self):
-        if self.dataset != "custom":
-            self.train_dataset_fn(self.root)
-            self.val_dataset_fn(self.root)
-            self.test_dataset_fn(self.root)
-
     def setup(self, stage="fit"):
         if self.dataset == "custom":
             if stage == "fit":
@@ -215,18 +209,18 @@ class DataModule(pl.LightningDataModule):
         else:
             if stage == "fit":
                 self.train_dataset = self.train_dataset_fn(
-                    self.root, transform=self.transforms_train, download=False
+                    transform=self.transforms_train, download=False
                 )
                 self.val_dataset = self.val_dataset_fn(
-                    self.root, transform=self.transforms_test, download=False
+                    transform=self.transforms_test, download=False
                 )
             elif stage == "validate":
                 self.val_dataset = self.val_dataset_fn(
-                    self.root, transform=self.transforms_test, download=False
+                    transform=self.transforms_test, download=False
                 )
             elif stage == "test":
                 self.test_dataset = self.test_dataset_fn(
-                    self.root, transform=self.transforms_test, download=False
+                    transform=self.transforms_test, download=False
                 )
 
     def train_dataloader(self):
