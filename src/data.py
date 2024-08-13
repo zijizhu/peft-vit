@@ -196,7 +196,7 @@ class DataModule(pl.LightningDataModule):
         )
 
     def setup(self, stage="fit"):
-        if self.dataset == "custom":
+        if self.dataset in ["custom", "cub200"]:
             if stage == "fit":
                 self.train_dataset = self.train_dataset_fn(
                     transform=self.transforms_train
