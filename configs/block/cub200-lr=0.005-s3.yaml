@@ -19,6 +19,7 @@ model:
   scheduler: cosine
   warmup_steps: 500
 data:
+  num_classes: 200
   dataset: cub200
   root: data/
   size: 224
