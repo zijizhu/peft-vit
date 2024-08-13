@@ -149,7 +149,7 @@ class DataModule(pl.LightningDataModule):
                 ImageFolder, root=os.path.join(self.root, "test")
             )
             print(f"Using custom dataset from {self.root}")
-        elif self.dataset == "cub":
+        elif self.dataset == "cub200":
             self.num_classes = num_classes
 
             self.train_dataset_fn = partial(ImageFolder, root=os.path.join(self.root, "cub200_cropped", "train"))
